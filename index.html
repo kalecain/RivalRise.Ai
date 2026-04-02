@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RivalRise AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b1020;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background: rgba(11, 16, 32, 0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #7dd3fc;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .hero {
+      padding: 90px 0 70px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin-bottom: 28px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #38bdf8;
+      color: #08111f;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-secondary {
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .hero-card,
+    .card,
+    .chart-card,
+    .demo-card,
+    .plan-card,
+    .waitlist-box {
+      background: #11172b;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.25);
+    }
+
+    .hero-card {
+      padding: 24px;
+    }
+
+    .hero-card h3 {
+      color: #7dd3fc;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+
+    .metric {
+      background: #1a2338;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      color: #dbeafe;
+    }
+
+    section {
+      padding: 70px 0;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: #cbd5e1;
+      max-width: 760px;
+      margin-bottom: 30px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      padding: 24px;
+    }
+
+    .card h3 {
+      color: #7dd3fc;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .card p {
+      color: #cbd5e1;
+    }
+
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .plan-card {
+      padding: 28px;
+    }
+
+    .plan-card h3 {
+      color: #7dd3fc;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .plan-card ul {
+      padding-left: 18px;
+      color: #cbd5e1;
+      margin-bottom: 20px;
+    }
+
+    .plan-card li {
+      margin-bottom: 10px;
+    }
+
+    .demo-top {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .demo-card {
+      padding: 20px;
+    }
+
+    .demo-card h3 {
+      color: #7dd3fc;
+      margin-bottom: 8px;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .chart-card {
+      padding: 20px;
+    }
+
+    .chart-card h3 {
+      margin-bottom: 14px;
+      color: #7dd3fc;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .analysis-box {
+      background: #1a2338;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .analysis-box h4 {
+      color: #7dd3fc;
+      margin-bottom: 10px;
+    }
+
+    .recommendations {
+      margin-top: 20px;
+      background: #11172b;
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .recommendations h3 {
+      color: #7dd3fc;
+      margin-bottom: 12px;
+    }
+
+    .recommendations ul {
+      padding-left: 20px;
+      color: #cbd5e1;
+    }
+
+    .recommendations li {
+      margin-bottom: 10px;
+    }
+
+    .waitlist-box {
+      padding: 42px 24px;
+      text-align: center;
+      background: linear-gradient(135deg, #11172b, #1d2940);
+    }
+
+    .waitlist-box h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .waitlist-box p {
+      color: #cbd5e1;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      min-width: 260px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 14px 22px;
+      border: none;
+      border-radius: 12px;
+      background: #38bdf8;
+      color: #08111f;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .success-message {
+      margin-top: 14px;
+      color: #86efac;
+      display: none;
+    }
+
+    footer {
+      padding: 28px 24px 40px;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 1000px) {
+      .hero,
+      .pricing,
+      .demo-top,
+      .charts,
+      .analysis-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .hero,
+      .grid-3,
+      .pricing,
+      .demo-top,
+      .charts,
+      .analysis-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .nav {
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav">
+      <div class="logo">RivalRise AI</div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#demo">Demo</a>
+        <a href="#waitlist">Waitlist</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <div>
+        <h1>Find competitor weak spots. Build your edge.</h1>
+        <p>
+          RivalRise AI helps startups and small businesses analyze competitors, uncover strengths and weaknesses,
+          compare market positioning, and get clear next-step recommendations for sales, pricing, product, and marketing.
+        </p>
+        <div class="buttons">
+          <a href="#demo" class="btn btn-primary">View Demo</a>
+          <a href="#waitlist" class="btn btn-secondary">Get Early Access</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h3>Sample Competitor Snapshot</h3>
+        <div class="metric"><strong>Competitor:</strong> SalesOrbit</div>
+        <div class="metric"><strong>Strength:</strong> Strong SEO and pricing clarity</div>
+        <div class="metric"><strong>Weakness:</strong> Low support satisfaction and weak onboarding</div>
+        <div class="metric"><strong>Opportunity:</strong> Position against them with premium support and faster setup</div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2 class="section-title">Competitor intelligence that actually tells you what to do</h2>
+      <p class="section-subtitle">
+        RivalRise AI is built to move beyond research. It turns public market signals into usable recommendations your team can act on right away.
+      </p>
+
+      <div class="grid-3">
+        <div class="card">
+          <h3>Competitor Snapshots</h3>
+          <p>See what competitors sell, how they position themselves, what they charge, and who they target.</p>
+        </div>
+        <div class="card">
+          <h3>Strength & Weakness Analysis</h3>
+          <p>Quickly understand where competitors are strong and where they leave room for you to win.</p>
+        </div>
+        <div class="card">
+          <h3>Review Sentiment</h3>
+          <p>Identify common complaints and positive themes from customer feedback across the market.</p>
+        </div>
+        <div class="card">
+          <h3>Positioning Gaps</h3>
+          <p>Find the underserved segments, missing messages, and product gaps competitors ignore.</p>
+        </div>
+        <div class="card">
+          <h3>AI Strategy Recommendations</h3>
+          <p>Get specific recommendations for landing pages, messaging, offers, pricing, and sales angles.</p>
+        </div>
+        <div class="card">
+          <h3>Ongoing Monitoring</h3>
+          <p>Track website changes, new offers, messaging shifts, and competitive movements over time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <h2 class="section-title">Simple pricing for startups, teams, and agencies</h2>
+      <p class="section-subtitle">
+        Start small, validate your market, and scale into ongoing competitor monitoring.
+      </p>
+
+      <div class="pricing">
+        <div class="plan-card">
+          <h3>Starter</h3>
+          <div class="price">$49/mo</div>
+          <ul>
+            <li>Track 3 competitors</li>
+            <li>5 reports per month</li>
+            <li>Core strengths and weaknesses analysis</li>
+            <li>Email summary reports</li>
+          </ul>
+          <a href="#waitlist" class="btn btn-primary">Choose Starter</a>
+        </div>
+
+        <div class="plan-card">
+          <h3>Growth</h3>
+          <div class="price">$199/mo</div>
+          <ul>
+            <li>Track 10 competitors</li>
+            <li>Weekly monitoring</li>
+            <li>Positioning and review analysis</li>
+            <li>AI recommendations and alerts</li>
+          </ul>
+          <a href="#waitlist" class="btn btn-primary">Choose Growth</a>
+        </div>
+
+        <div class="plan-card">
+          <h3>Agency</h3>
+          <div class="price">Custom</div>
+          <ul>
+            <li>Multi-client dashboards</li>
+            <li>White-label reports</li>
+            <li>Expanded exports and team seats</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#waitlist" class="btn btn-primary">Talk to Sales</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <h2 class="section-title">Interactive demo with fake companies</h2>
+      <p class="section-subtitle">
+        This sample report shows how RivalRise AI could analyze a company called <strong>NovaFlow</strong> against fake competitors:
+        <strong> SalesOrbit</strong>, <strong>PipelinePro</strong>, and <strong>ClientForge</strong>.
+      </p>
+
+      <div class="demo-top">
+        <div class="demo-card">
+          <h3>Top Opportunity</h3>
+          <p>Win on premium support, cleaner UX, and faster onboarding for small and mid-sized teams.</p>
+        </div>
+        <div class="demo-card">
+          <h3>Biggest Threat</h3>
+          <p>SalesOrbit has stronger SEO and broader market awareness, which makes discovery harder.</p>
+        </div>
+        <div class="demo-card">
+          <h3>Best Positioning</h3>
+          <p>The modern CRM for growing teams that want quick setup, clean design, and human support.</p>
+        </div>
+      </div>
+
+      <div class="charts">
+        <div class="chart-card">
+          <h3>Monthly Pricing Comparison</h3>
+          <canvas id="pricingChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Customer Sentiment Score</h3>
+          <canvas id="sentimentChart"></canvas>
+        </div>
+      </div>
+
+      <div class="charts">
+        <div class="chart-card">
+          <h3>Brand Visibility Score</h3>
+          <canvas id="visibilityChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Feature Comparison</h3>
+          <canvas id="featureChart"></canvas>
+        </div>
+      </div>
+
+      <div class="analysis-grid">
+        <div class="analysis-box">
+          <h4>NovaFlow</h4>
+          <p><strong>Strengths:</strong> Clean UX, strong support, fast onboarding</p>
+          <p><strong>Weaknesses:</strong> Lower SEO visibility, smaller brand awareness</p>
+        </div>
+        <div class="analysis-box">
+          <h4>SalesOrbit</h4>
+          <p><strong>Strengths:</strong> Strong SEO, good pricing clarity, known brand</p>
+          <p><strong>Weaknesses:</strong> Poor support sentiment, slower onboarding</p>
+        </div>
+        <div class="analysis-box">
+          <h4>PipelinePro</h4>
+          <p><strong>Strengths:</strong> Balanced product, decent market presence</p>
+          <p><strong>Weaknesses:</strong> Weak differentiation, average user experience</p>
+        </div>
+        <div class="analysis-box">
+          <h4>ClientForge</h4>
+          <p><strong>Strengths:</strong> Lower price point, simple sales offer</p>
+          <p><strong>Weaknesses:</strong> Outdated design, low trust, weaker features</p>
+        </div>
+      </div>
+
+      <div class="recommendations">
+        <h3>AI Recommendations</h3>
+        <ul>
+          <li>Lead your homepage messaging with fast onboarding and premium customer support.</li>
+          <li>Create competitor comparison landing pages to go after stronger SEO competitors.</li>
+          <li>Position NovaFlow as the modern, clean, human-supported alternative.</li>
+          <li>Use customer testimonials heavily to build trust faster than lower-cost players.</li>
+          <li>Target small teams underserved by complex enterprise-first competitors.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="waitlist">
+      <div class="waitlist-box">
+        <h2>Stop guessing. Start outsmarting your competitors.</h2>
+        <p>Join the RivalRise AI early access list and start building your edge.</p>
+        <form id="waitlistForm">
+          <input type="email" id="emailInput" placeholder="Enter your email" required />
+          <button type="submit">Join Waitlist</button>
+        </form>
+        <div class="success-message" id="successMessage">Thanks — you’ve been added to the waitlist demo.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 RivalRise AI. Find competitor weak spots. Build your edge.
+  </footer>
+
+  <script>
+    const chartTextColor = "#cbd5e1";
+    const gridColor = "rgba(255,255,255,0.08)";
+
+    new Chart(document.getElementById("pricingChart"), {
+      type: "bar",
+      data: {
+        labels: ["NovaFlow", "SalesOrbit", "PipelinePro", "ClientForge"],
+        datasets: [{
+          label: "Monthly Price ($)",
+          data: [49, 79, 59, 39],
+          backgroundColor: ["#38bdf8", "#60a5fa", "#818cf8", "#22d3ee"],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: chartTextColor } }
+        },
+        scales: {
+          x: { ticks: { color: chartTextColor }, grid: { color: gridColor } },
+          y: { ticks: { color: chartTextColor }, grid: { color: gridColor } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("sentimentChart"), {
+      type: "bar",
+      data: {
+        labels: ["NovaFlow", "SalesOrbit", "PipelinePro", "ClientForge"],
+        datasets: [{
+          label: "Sentiment Score",
+          data: [88, 64, 72, 61],
+          backgroundColor: ["#22c55e", "#f97316", "#eab308", "#ef4444"],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: chartTextColor } }
+        },
+        scales: {
+          x: { ticks: { color: chartTextColor }, grid: { color: gridColor } },
+          y: { ticks: { color: chartTextColor }, grid: { color: gridColor }, suggestedMax: 100 }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("visibilityChart"), {
+      type: "doughnut",
+      data: {
+        labels: ["NovaFlow", "SalesOrbit", "PipelinePro", "ClientForge"],
+        datasets: [{
+          label: "Visibility",
+          data: [18, 36, 27, 19],
+          backgroundColor: ["#38bdf8", "#6366f1", "#8b5cf6", "#06b6d4"],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: chartTextColor } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("featureChart"), {
+      type: "radar",
+      data: {
+        labels: ["UX", "Support", "SEO", "Pricing Clarity", "Onboarding"],
+        datasets: [
+          {
+            label: "NovaFlow",
+            data: [90, 92, 61, 80, 91],
+            borderColor: "#38bdf8",
+            backgroundColor: "rgba(56,189,248,0.2)"
+          },
+          {
+            label: "SalesOrbit",
+            data: [72, 58, 91, 89, 63],
+            borderColor: "#818cf8",
+            backgroundColor: "rgba(129,140,248,0.18)"
+          },
+          {
+            label: "PipelinePro",
+            data: [79, 71, 76, 74, 75],
+            borderColor: "#22d3ee",
+            backgroundColor: "rgba(34,211,238,0.16)"
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: chartTextColor } }
+        },
+        scales: {
+          r: {
+            angleLines: { color: gridColor },
+            grid: { color: gridColor },
+            pointLabels: { color: chartTextColor },
+            ticks: { color: chartTextColor, backdropColor: "transparent" }
+          }
+        }
+      }
+    });
+
+    document.getElementById("waitlistForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("emailInput").value.trim();
+      if (email) {
+        document.getElementById("successMessage").style.display = "block";
+        document.getElementById("emailInput").value = "";
+      }
+    });
+  </script>
+
+</body>
+</html>
